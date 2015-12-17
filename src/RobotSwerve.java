@@ -8,7 +8,13 @@
 
 
 
-import edu.wpi.first.wpilibj.SimpleRobot;
+import Hardware.DigiPot;
+import Hardware.SabertoothSpeedController;
+import Hardware.SwervePod;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,15 +23,36 @@ import edu.wpi.first.wpilibj.SimpleRobot;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class RobotSwerve extends SimpleRobot {
+public class RobotSwerve extends IterativeRobot {
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    SwervePod _podUpperLeft;
+    Encoder _encoder;
+    DigiPot _digipot;
+    
+    Talon _turningMotor;
+    SabertoothSpeedController _driveMotor;
+    
+    SwervePod _pod;
     
     public void robotInit() {
-        _podUpperLeft = new SwervePod(9, 128, 1, 38400, 1, 2, 1);
+        System.out.println("Initializing robot...");
+        if (!SabertoothSpeedController.isSerialSet()) SabertoothSpeedController.initializeSerialPort(9600);
+        _encoder = new Encoder(1, 2);
+        _digipot = new DigiPot(1, 0.204, 4.96, 0.0);
+        
+        _turningMotor = new Talon(9);
+        _driveMotor = new SabertoothSpeedController(128, 1);
+        
+        _pod = new SwervePod(_turningMotor, _driveMotor, _encoder, _digipot); 
+    }
+    
+    public void teleopInit() {
+        System.out.println("Beginning test sequence...");
+        //Test sequence
+        _pod.setDriveMotor(-1.0);
+        _pod.setTurningMotor(0.2);
     }
 
     /**
@@ -39,7 +66,8 @@ public class RobotSwerve extends SimpleRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
+        //System.out.println("Encoder: " + _pod.getEncoderCounts());
+        //System.out.println("Digipot: " + _pod.getDegrees());
     }
     
     /**
@@ -47,6 +75,10 @@ public class RobotSwerve extends SimpleRobot {
      */
     public void testPeriodic() {
     
+    }
+    
+    public void disabledInit() {
+        _pod.disable();
     }
     
 }
