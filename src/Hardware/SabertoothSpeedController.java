@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.visa.VisaException;
  */
 public class SabertoothSpeedController implements SpeedController {
     
-    private static SerialPort _PORT; //Serial port shared by all Sabertooths
+    private static SerialPort _PORT = null; //Serial port shared by all Sabertooths
     
     //TODO: Keep list of assigned motors (address/motor pairs) and throw an error when we overwrite one?
     
@@ -38,6 +38,7 @@ public class SabertoothSpeedController implements SpeedController {
     }
     
     public static void initializeSerialPort(int baudRate) {
+        System.out.println("Initializing the serial port...");
         if(_PORT != null) throw new IllegalStateException("Serial port already initialized");
         
         try {
@@ -72,17 +73,19 @@ public class SabertoothSpeedController implements SpeedController {
         set(speed); //Not sure if I'll ever need to implement sync groups for this
     }
 
-    public void set(double speed) {
+    public void set(double speed) { //Speed should be between -1.0 and 1.0
         double spd = Math.abs(speed);
         
         if (spd > 1.0) throw new IllegalArgumentException("Speed must be between -1.0 and 1.0");
+        
+        _currentSpeed = speed;
         
         // Set command byte... TODO: Make this more readable? //
         int command = (_motorNumber == 1) ? 0 : 4; //Command is 0/1 for motor 1, 4/5 for motor 2
         if (speed < 0.0) command++;
         
         // Set data byte //
-        int data = (int) Math.floor(spd * 128.0);
+        int data = (int) Math.floor(spd * 127.0);
         
         // Write data //
         try {
@@ -94,5 +97,9 @@ public class SabertoothSpeedController implements SpeedController {
 
     public void disable() {
         set(0.0);
+    }
+    
+    public static boolean isSerialSet() { //Has the serial port been set yet?
+        return !(_PORT == null);
     }
 }
