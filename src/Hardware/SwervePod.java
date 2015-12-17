@@ -1,11 +1,8 @@
 package Hardware;
 
 
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.visa.VisaException;
+import edu.wpi.first.wpilibj.SpeedController;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,64 +16,36 @@ import edu.wpi.first.wpilibj.visa.VisaException;
  */
 public class SwervePod {
     // Hardware //
-    private Talon               _turningMotor;
-    private SerialPort          _serial;
+    private final SpeedController _turningMotor;
+    private final SpeedController _driveMotor;
     
-    private int                 _sabertoothAddress;
-    private int                 _sabertoothMotor;
+    private final Encoder         _encoder;
+    private final AngularSensor   _directionSensor;
     
-    private Encoder             _encoder;
-    private AnalogPotentiometer _digipot;
-    
-    //Sabertooth IDs: 128 and 129
-    //Sabertooth motors: 1 and 2
-    public SwervePod(int talonPort, int sabertoothAddress, int sabertoothMotor, int baudRate, int encoderA, int encoderB, int digipotChannel) {
-        _sabertoothAddress = sabertoothAddress;
-        _sabertoothMotor = sabertoothMotor;
-        
-        _turningMotor = new Talon(talonPort);
-        _encoder = new Encoder(encoderA, encoderB);
-        _digipot = new AnalogPotentiometer(digipotChannel); 
-    
-        // Setup serial //
-        try {
-        _serial = new SerialPort(baudRate); //Create serial port
-        //Send bauding character
-        byte[] baudChar = { (byte) 170 };
-        _serial.write(baudChar, baudChar.length);
-        } catch (VisaException e) {
-            System.out.println("Error creating serial port: " + e);
-        }
+    public SwervePod(SpeedController turningMotor, SpeedController driveMotor, Encoder encoder, AngularSensor directionSensor) {
+        _turningMotor = turningMotor;
+        _driveMotor = driveMotor;
+        _encoder = encoder;
+        _directionSensor = directionSensor;
     }
     
     public void setTurningMotor(double speed) { //Speed should be between -1.0 and 1.0
         _turningMotor.set(speed);
     }
     
-    public void setDriveMotor(double speed) { //Speed should be between -1.0 and 1.0
-        double spd = Math.abs(speed);
-        
-        if (spd > 1.0) {
-            System.out.println("Error setting drive motor: speed too high");
-            return;
-        }
-        
-        // Set command byte... TODO: Make this more readable? //
-        int command = (_sabertoothMotor == 1) ? 0 : 4; //Command is 0/1 for motor 1, 4/5 for motor 2
-        if (speed < 0.0) command++;
-        
-        // Set data byte //
-        int data = (int) Math.floor(spd * 128.0);
-        
-        // Write data //
-        try {
-            writeSerialPacket(command, data);
-        } catch (VisaException e) {
-            System.out.println("Error writing serial data: " + e);
-        }
+    public double getTurningMotor() {
+        return _turningMotor.get();
     }
     
-    public int getEncoder() {
+    public void setDriveMotor(double speed) { //Speed should be between -1.0 and 1.0
+        _driveMotor.set(speed);
+    }
+    
+    public double getDriveMotor() {
+        return _driveMotor.get();
+    }
+    
+    public int getEncoderCounts() {
         return _encoder.get();
     }
     
@@ -84,16 +53,12 @@ public class SwervePod {
         _encoder.reset();
     }
     
-    public double getDigipotRaw() { //TODO: Write linear mapping for this -> degrees
-        return _digipot.get();
+    public double getDegrees() {
+        return _directionSensor.getDegrees();
     }
     
-    private void writeSerialPacket(int command, int data) throws VisaException {
-        byte addr = (byte) _sabertoothAddress;
-        byte com = (byte) command;
-        byte dat = (byte) data;
-        byte checksum = (byte) ((addr + com + dat) & 0x7F);
-        byte[] packet = { addr, com, dat, checksum };
-        _serial.write(packet, packet.length);
+    public void disable() { //Disable both motors
+        _turningMotor.disable();
+        _driveMotor.disable();
     }
 }
