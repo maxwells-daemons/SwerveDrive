@@ -8,7 +8,7 @@
 
 
 
-import Hardware.DigiPot;
+import Hardware.AbsoluteAnalogEncoder;
 import Hardware.SabertoothSpeedController;
 import Hardware.SwervePod;
 import edu.wpi.first.wpilibj.Encoder;
@@ -29,7 +29,7 @@ public class RobotSwerve extends IterativeRobot {
      * used for any initialization code.
      */
     Encoder _encoder;
-    DigiPot _digipot;
+    AbsoluteAnalogEncoder _digipot;
     
     Talon _turningMotor;
     SabertoothSpeedController _driveMotor;
@@ -40,7 +40,7 @@ public class RobotSwerve extends IterativeRobot {
         System.out.println("Initializing robot...");
         if (!SabertoothSpeedController.isSerialSet()) SabertoothSpeedController.initializeSerialPort(9600);
         _encoder = new Encoder(1, 2);
-        _digipot = new DigiPot(1, 0.204, 4.96, 0.0);
+        _digipot = new AbsoluteAnalogEncoder(1, 0.204, 4.96, 0.0);
         
         _turningMotor = new Talon(9);
         _driveMotor = new SabertoothSpeedController(128, 1);
