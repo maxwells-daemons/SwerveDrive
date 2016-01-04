@@ -1,4 +1,4 @@
-package Hardware;
+package hardware;
 
 
 import edu.wpi.first.wpilibj.Encoder;

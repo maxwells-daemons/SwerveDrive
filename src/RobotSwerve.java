@@ -8,9 +8,9 @@
 
 
 
-import Hardware.AbsoluteAnalogEncoder;
-import Hardware.SabertoothSpeedController;
-import Hardware.SwervePod;
+import hardware.AbsoluteAnalogEncoder;
+import hardware.SabertoothSpeedController;
+import hardware.SwervePod;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Talon;
