@@ -5,7 +5,6 @@
  */
 package Hardware;
 
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.visa.VisaException;
@@ -52,12 +51,10 @@ public class SabertoothSpeedController implements SpeedController {
         }
     }
     
-    private void writeSerialPacket(int command, int data) throws VisaException {
+    private void writeSerialPacket(byte command, byte data) throws VisaException {
         byte addr = (byte) _address;
-        byte com = (byte) command;
-        byte dat = (byte) data;
-        byte checksum = (byte) ((addr + com + dat) & 0x7F);
-        byte[] packet = { addr, com, dat, checksum };
+        byte checksum = (byte) ((addr + command + data) & 0x7F);
+        byte[] packet = { addr, command, data, checksum };
         _PORT.write(packet, packet.length);
     }
     
@@ -80,12 +77,15 @@ public class SabertoothSpeedController implements SpeedController {
         
         _currentSpeed = speed;
         
-        // Set command byte... TODO: Make this more readable? //
-        int command = (_motorNumber == 1) ? 0 : 4; //Command is 0/1 for motor 1, 4/5 for motor 2
+        // Set command byte... TODO: Make this more readable //
+        // Command is 0/1 for motor 1, 4/5 for motor 2
+        byte command = 0;
+        if (_motorNumber == 1) command = 4;
+        
         if (speed < 0.0) command++;
         
         // Set data byte //
-        int data = (int) Math.floor(spd * 127.0);
+        byte data = (byte) Math.floor(spd * 127.0);
         
         // Write data //
         try {
