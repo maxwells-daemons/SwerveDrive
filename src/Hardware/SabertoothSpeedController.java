@@ -99,7 +99,7 @@ public class SabertoothSpeedController implements SpeedController {
         set(0.0);
     }
     
-    public static boolean isSerialSet() { //Has the serial port been set yet?
+    public static boolean isSerialPortInitialized() { //Has the serial port been initialized yet?
         return !(_PORT == null);
     }
 }

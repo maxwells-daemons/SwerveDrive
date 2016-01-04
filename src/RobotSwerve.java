@@ -38,7 +38,7 @@ public class RobotSwerve extends IterativeRobot {
     
     public void robotInit() {
         System.out.println("Initializing robot...");
-        if (!SabertoothSpeedController.isSerialSet()) SabertoothSpeedController.initializeSerialPort(9600);
+        if (!SabertoothSpeedController.isSerialPortInitialized()) SabertoothSpeedController.initializeSerialPort(9600);
         _encoder = new Encoder(1, 2);
         _digipot = new AbsoluteAnalogEncoder(1, 0.204, 4.96, 0.0);
         
