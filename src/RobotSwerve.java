@@ -43,16 +43,21 @@ public class RobotSwerve extends IterativeRobot {
         _digipot = new AbsoluteAnalogEncoder(1, 0.204, 4.96, 0.0);
         
         _turningMotor = new Talon(9);
-        _driveMotor = new SabertoothSpeedController(128, 1);
+        _driveMotor = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
         
         _pod = new SwervePod(_turningMotor, _driveMotor, _encoder, _digipot); 
     }
     
     public void teleopInit() {
+        //TODO
+    }
+    
+    public void testInit() {
         System.out.println("Beginning test sequence...");
         //Test sequence
-        _pod.setDriveMotor(-1.0);
-        _pod.setTurningMotor(0.2);
+        _pod.setDriveMotor(-0.5); //Start drive motor backwards at 50% speed
+        //_pod.setTurningMotor(0.2);
+    
     }
 
     /**
