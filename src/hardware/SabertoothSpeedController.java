@@ -19,6 +19,40 @@ public class SabertoothSpeedController implements SpeedController {
     
     //TODO: Keep list of assigned motors (address/motor pairs) and throw an error when we overwrite one?
     
+    // Hardware constants //
+    private static final double sabertooth_maxSpeed = 127.0; //Speed setting when the motor is at maximum forward speed
+    private static final double sabertooth_minSpeed = 1.0; //Speed setting when the motor is at maximum backward speed
+    private static final double sabertooth_offSpeed = 0.0; //Speed setting when the motor is off
+    
+    private static final double motorInput_maxSpeed = 1.0; //Speed setting to turn the motor on at max forward speed
+    private static final double motorInput_minSpeed = -1.0; //Speed setting to turn the motor on at max backward speed
+    private static final double motorInput_offSpeed = 0.0; //Speed setting to turn the motor off
+    
+    // Special bytes to be sent over serial //
+    private static final byte sabertooth_baudingCharacter = (byte) 170;
+    private static final byte sabertooth_command_motorOneForward = 0;
+    private static final byte sabertooth_command_motorOneBackward = 1;
+    private static final byte sabertooth_command_motorTwoForward = 4;
+    private static final byte sabertooth_command_motorTwoBackward = 5;
+    
+    public static class SabertoothCommand {
+        public final byte value;
+        
+        protected static final byte MOTOR_ONE_FORWARD_VALUE = 0;
+        protected static final byte MOTOR_ONE_BACKWARD_VALUE = 1;
+        protected static final byte MOTOR_TWO_FORWARD_VALUE = 4;
+        protected static final byte MOTOR_TWO_BACKWARD_VALUE = 5;
+        
+        public static final SabertoothCommand MOTOR_ONE_FORWARD = new SabertoothCommand(MOTOR_ONE_FORWARD_VALUE);
+        public static final SabertoothCommand MOTOR_ONE_BACKWARD = new SabertoothCommand(MOTOR_ONE_BACKWARD_VALUE);
+        public static final SabertoothCommand MOTOR_TWO_FORWARD = new SabertoothCommand(MOTOR_TWO_FORWARD_VALUE);
+        public static final SabertoothCommand MOTOR_TWO_BACKWARD = new SabertoothCommand(MOTOR_TWO_BACKWARD_VALUE);
+        
+        private SabertoothCommand(byte value) {
+            this.value = value;
+        }
+    }
+    
     // Motor specification //
     private SabertoothAddress _address;
     private SabertoothMotor _motorNumber;
@@ -71,7 +105,7 @@ public class SabertoothSpeedController implements SpeedController {
         _address = address;
         _motorNumber = motorNumber;
     
-        _currentSpeed = 0.0;
+        _currentSpeed = motorInput_offSpeed;
     }
     
     public static void initializeSerialPort(int baudRate) {
@@ -82,7 +116,7 @@ public class SabertoothSpeedController implements SpeedController {
             _PORT = new SerialPort(baudRate);
             
             // send the baud rate character //
-            byte[] baudChar = { (byte) 170 };
+            byte[] baudChar = { sabertooth_baudingCharacter };
             _PORT.write(baudChar, baudChar.length);
         } catch(VisaException e) {
             throw new RuntimeException("Error creating serial port: " + e.getMessage());
@@ -91,7 +125,7 @@ public class SabertoothSpeedController implements SpeedController {
     
     private void writeSerialPacket(byte command, byte data) throws VisaException {
         byte addr = (byte) _address.value;
-        byte checksum = (byte) ((addr + command + data) & 0x7F);
+        byte checksum = (byte) ((addr + command + data) & 0x7F); //Generate checksum from address, command, and data bytes
         byte[] packet = { addr, command, data, checksum };
         _PORT.write(packet, packet.length);
     }
@@ -111,18 +145,30 @@ public class SabertoothSpeedController implements SpeedController {
     public void set(double speed) { //Speed should be between -1.0 and 1.0
         double spd = Math.abs(speed);
         
-        if (spd > 1.0) throw new IllegalArgumentException("Speed must be between -1.0 and 1.0");
+        if (spd > motorInput_maxSpeed) throw new IllegalArgumentException("Speed must be between -1.0 and 1.0");
         
         _currentSpeed = speed;
         
-        // Command is 0/1 for motor 1, 4/5 for motor 2
-        byte command = 0;
-        if (_motorNumber == SabertoothMotor.SABERTOOTH_MOTOR_TWO) command = 4;
+        // Set command byte //
+        byte command;
+        command = SabertoothCommand.MOTOR_ONE_FORWARD.value;
         
-        if (speed < 0.0) command++;
+        if (_motorNumber == SabertoothMotor.SABERTOOTH_MOTOR_ONE) {
+            if (speed >= motorInput_offSpeed) {
+                command = SabertoothCommand.MOTOR_ONE_FORWARD.value;
+            } else {
+                command = SabertoothCommand.MOTOR_ONE_BACKWARD.value;
+            }
+        } else {
+            if (speed >= motorInput_offSpeed) {
+                command = SabertoothCommand.MOTOR_TWO_FORWARD.value;
+            } else {
+                command = SabertoothCommand.MOTOR_TWO_BACKWARD.value;
+            }
+        }
         
         // Set data byte //
-        byte data = (byte) Math.floor(spd * 127.0);
+        byte data = (byte) Math.floor(spd * sabertooth_maxSpeed);
         
         // Write data //
         try {
@@ -133,7 +179,7 @@ public class SabertoothSpeedController implements SpeedController {
     }
 
     public void disable() {
-        set(0.0);
+        set(motorInput_offSpeed);
     }
     
     public static boolean isSerialPortInitialized() { //Has the serial port been initialized yet?
