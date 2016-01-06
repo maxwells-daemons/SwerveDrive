@@ -52,7 +52,6 @@ public class RobotSwerve extends IterativeRobot {
     
     public void teleopInit() {
         //TODO
-        SabertoothSpeedController newController = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
     }
     
     public void testInit() {
