@@ -42,7 +42,7 @@ public class RobotSwerve extends IterativeRobot {
         _encoder = new Encoder(1, 2);
         _digipot = new AbsoluteAnalogEncoder(1, 0.204, 4.96, 0.0);
         
-        _turningMotor = new Talon(6);
+        _turningMotor = new Talon(9);
         _driveMotor = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
         
         _pod = new SwervePod(_turningMotor, _driveMotor, _encoder, _digipot); 
@@ -52,6 +52,7 @@ public class RobotSwerve extends IterativeRobot {
     
     public void teleopInit() {
         //TODO
+        SabertoothSpeedController newController = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
     }
     
     public void testInit() {

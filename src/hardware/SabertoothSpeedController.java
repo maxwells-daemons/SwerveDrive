@@ -8,8 +8,9 @@ package hardware;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.visa.VisaException;
+import java.util.Vector;
 
-/**
+/*
  *
  * @author Aidan
  */
@@ -17,8 +18,9 @@ public class SabertoothSpeedController implements SpeedController {
     
     private static SerialPort _PORT = null; //Serial port shared by all Sabertooths
     
-    //TODO: Keep list of assigned motors (address/motor pairs) and throw an error when we overwrite one?
-    
+    // List of already-assigned motors //
+    private static Vector _assignedMotors = new Vector();
+            
     // Hardware constants //
     private static final double sabertooth_maxSpeed = 127.0; //Speed setting when the motor is at maximum forward speed
     private static final double sabertooth_minSpeed = 1.0; //Speed setting when the motor is at maximum backward speed
@@ -102,6 +104,17 @@ public class SabertoothSpeedController implements SpeedController {
     public SabertoothSpeedController(SabertoothAddress address, SabertoothMotor motorNumber) {
         if (_PORT == null) throw new IllegalStateException("Serial port not initialized, call initializeSerialPort(baudRate)");
         
+        // Check to see if this motor has already been assigned //
+        for (int i = 0; i < _assignedMotors.size(); i++) {
+            SabertoothSpeedController examinedMotor = (SabertoothSpeedController) _assignedMotors.elementAt(i);
+            if (examinedMotor.getAddress() == address && examinedMotor.getMotorNumber() == motorNumber) {
+                throw new IllegalStateException("Motor " + motorNumber.value + " on the Sabertooth at address " + address.value + " is already in use");
+            }
+        }
+        
+        // Add this motor to the list of assigned ones //
+        _assignedMotors.addElement(this);
+        
         _address = address;
         _motorNumber = motorNumber;
     
@@ -115,7 +128,7 @@ public class SabertoothSpeedController implements SpeedController {
         try {
             _PORT = new SerialPort(baudRate);
             
-            // send the baud rate character //
+            // Send the baud rate character //
             byte[] baudChar = { sabertooth_baudingCharacter };
             _PORT.write(baudChar, baudChar.length);
         } catch(VisaException e) {
@@ -184,5 +197,13 @@ public class SabertoothSpeedController implements SpeedController {
     
     public static boolean isSerialPortInitialized() { //Has the serial port been initialized yet?
         return !(_PORT == null);
+    }
+    
+    public SabertoothAddress getAddress() {
+        return _address;
+    }
+    
+    public SabertoothMotor getMotorNumber() {
+        return _motorNumber;
     }
 }
