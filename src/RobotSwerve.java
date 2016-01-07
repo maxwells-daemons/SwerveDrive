@@ -45,9 +45,9 @@ public class RobotSwerve extends IterativeRobot {
         _turningMotor = new Talon(9);
         _driveMotor = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
         
-        _pod = new SwervePod(_turningMotor, _driveMotor, _encoder, _digipot); 
-        _pod.setTurningMotor(0.0);
+        _pod = new SwervePod(_turningMotor, _driveMotor, _encoder, _digipot);
         _pod.setDriveMotor(0.0);
+        _pod.setTurningMotor(0.0);
     }
     
     public void teleopInit() {
@@ -55,9 +55,11 @@ public class RobotSwerve extends IterativeRobot {
     }
     
     public void testInit() {
-        System.out.println("Beginning test sequence...");
+        System.out.println("Beginning test sequence two...");
         //Test sequence
-        _pod.setDriveMotor(-0.3); //Start drive motor backwards at 30% speed
+        _pod.setDriveMotor(0.0); //Start drive motor backwards at 30% speed
+        _pod.setTurningMotor(0.0);
+        //_pod.setTurningSetpoint(90.0);
     }
 
     /**
@@ -71,15 +73,15 @@ public class RobotSwerve extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        //System.out.println("Encoder: " + _pod.getEncoderCounts());
-        //System.out.println("Digipot: " + _pod.getDegrees());
+        
     }
     
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    
+        //System.out.println("PID Output: " + _pod.getTurningPIDOutput());
+        System.out.println("Encoder: " + _pod.getEncoderCounts());
     }
     
     public void disabledInit() {

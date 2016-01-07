@@ -48,6 +48,10 @@ public class AbsoluteAnalogEncoder extends AnalogPotentiometer implements Angula
         return degrees;
     }
     
+    public double pidGet() {
+        return this.getDegrees();
+    }
+    
     public double getMinVoltage() {
         return _minVoltage;
     }

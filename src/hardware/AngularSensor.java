@@ -5,10 +5,12 @@
  */
 package hardware;
 
+import edu.wpi.first.wpilibj.PIDSource;
+
 /**
  *
  * @author Aidan
  */
-public interface AngularSensor {
+public interface AngularSensor extends PIDSource {
     public double getDegrees();
 }
