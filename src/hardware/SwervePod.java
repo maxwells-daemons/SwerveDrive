@@ -30,6 +30,14 @@ public class SwervePod {
     private final double offSpeed = 0.0; //Speed to feed a SpeedController to turn it off
     private final double minDegrees = 0.0;
     private final double maxDegrees = 360;
+    private final double PI = 3.14;
+    
+    // Temporary solution to converting encoder ticks to useful units //
+    private final double wheelGearRatio = 3.5;
+    private final double encoderGearRatio = 1.5;
+    private final double encoderTicksPerRev = 2048;
+    private final double wheelRadius = 1.0; //In inches
+    private final double encoderInchesPerTick = (2 * PI * wheelRadius) / (wheelGearRatio * encoderGearRatio * encoderTicksPerRev);
     
     // Control constants //
     private final double Kp_turning = 0.015;
@@ -44,7 +52,10 @@ public class SwervePod {
         // Initialize motors //
         _turningMotor = turningMotor;
         _driveMotor = driveMotor;
+        
+        // Initialize sensors //
         _encoder = encoder;
+        _encoder.setDistancePerPulse(encoderInchesPerTick);
         _encoder.start();
         _directionSensor = directionSensor;
         
@@ -55,7 +66,6 @@ public class SwervePod {
         PIDTurning.setContinuous(true);
         PIDTurning.setAbsoluteTolerance(tolerance_turning);    
         PIDTurning.disable();
-        SmartDashboard.putData("Turning PID", PIDTurning);
     }
     
     public void setTurningSetpoint(double degrees) {
@@ -92,6 +102,18 @@ public class SwervePod {
     
     public int getEncoderCounts() {
         return _encoder.get();
+    }
+    
+    public double getEncoderDegrees() {
+        return (_encoder.get() * maxDegrees) / (encoderTicksPerRev * wheelGearRatio * encoderGearRatio);
+    }
+    
+    public double getEncoderDistance() { //Inches
+        return _encoder.getDistance();
+    }
+    
+    public double getEncoderRate() { //Inches per second
+        return _encoder.getRate();
     }
     
     public void resetEncoder() {
