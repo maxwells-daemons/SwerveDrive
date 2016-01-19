@@ -3,8 +3,8 @@ package hardware;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
@@ -39,15 +39,23 @@ public class SwervePod {
     private final double encoderTicksPerRev = 2048;
     private final double wheelRadius = 1.0; //In inches
     private final double encoderInchesPerTick = (2 * PI * wheelRadius) / (wheelGearRatio * encoderGearRatio * encoderTicksPerRev);
+    private final double maxWheelSpeed = 24.3; //Speed the wheel moves at max output (maxSpeed) in inches / sec; temporary fix, determined empirically
     
     // Control constants //
+    //TODO: Tune all
     private final double Kp_turning = 0.012;
     private final double Ki_turning = 0.000;
-    private final double Kd_turning = 0.0001;
+    private final double Kd_turning = 0.000;
     private final double tolerance_turning = 10.0;
+    
+    private final double Kp_driving = 0.012;
+    private final double Ki_driving = 0.000;
+    private final double Kd_driving = 0.000;
+    private final double tolerance_driving = 1.0;
     
     // PID loops //
     PIDController PIDTurning;
+    PIDController PIDDriving;
     
     public SwervePod(SpeedController turningMotor, SpeedController driveMotor, Encoder encoder, AngularSensor directionSensor) {
         // Initialize motors //
@@ -57,38 +65,37 @@ public class SwervePod {
         // Initialize sensors //
         _encoder = encoder;
         _encoder.setDistancePerPulse(encoderInchesPerTick);
+        _encoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); //The encoder should return a rate
         _encoder.start();
         _directionSensor = directionSensor;
         
         // Initialize PID loops //
+        // Turning //
         PIDTurning = new PIDController(Kp_turning, Ki_turning, Kd_turning, _directionSensor, _turningMotor);
         PIDTurning.setInputRange(minDegrees, maxDegrees);
         PIDTurning.setOutputRange(minSpeed, maxSpeed);
         PIDTurning.setContinuous(true);
         PIDTurning.setAbsoluteTolerance(tolerance_turning);    
         PIDTurning.disable();
+        
+        // Linear driving //
+        PIDDriving = new PIDController(Kp_driving, Ki_driving, Kd_driving, _encoder, _driveMotor);
+        PIDDriving.setOutputRange(minSpeed, maxSpeed);
+        PIDDriving.disable();
     }
     
     public void initSmartDashboard() {
-        /*
-        class tableTest implements ITable {
-            public double getDouble() {
-                return 0.0;
-            }
-        }
-        */
-        
-        //TODO: Add all relevant info
+        //TODO: Write custom SmartDashboard widget
         SmartDashboard.putData("Turning PID", PIDTurning);
         SmartDashboard.putNumber("Pod Facing Angle", _directionSensor.getDegrees());
-        SmartDashboard.putNumber("Turning PID Output", PIDTurning.get());
-        System.out.println(_encoder.getSmartDashboardType());
+        SmartDashboard.putData("Driving PID", PIDDriving);
+        SmartDashboard.putNumber("Wheel Speed", _encoder.getRate());
     }
     
     public void updateSmartDashboard() { //Call to update SmartDashboard values
-        //TODO: Add all relevant info
+        //TODO: Handle through custom SmartDashboard widget
         SmartDashboard.putNumber("Pod Facing Angle", _directionSensor.getDegrees());
-        SmartDashboard.putNumber("Turning PID Output", PIDTurning.get());
+        SmartDashboard.putNumber("Wheel Speed", _encoder.getRate());
     }
     
     public void setTurningSetpoint(double degrees) {
@@ -99,12 +106,12 @@ public class SwervePod {
         return PIDTurning.getSetpoint();
     }
     
-    public double getTurningPIDOutput() {
-        return PIDTurning.get();
+    public void setDrivingSetpoint(double speed) {
+        PIDDriving.setSetpoint(speed);
     }
     
-    public double getTurningPIDError() {
-        return PIDTurning.getError();
+    public double getDrivingSetpoint() {
+        return PIDTurning.getSetpoint();
     }
     
     public void setTurningMotor(double speed) { //Speed should be between -1.0 and 1.0
@@ -136,6 +143,7 @@ public class SwervePod {
     }
     
     public double getEncoderRate() { //Inches per second
+        //NOTE: Encoder is currently not reading high rates correctly. I think it's skipping ticks at high speeds -- resolution * RPM too high for electronics?
         return _encoder.getRate();
     }
     

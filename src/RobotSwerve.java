@@ -53,9 +53,8 @@ public class RobotSwerve extends IterativeRobot {
     public void teleopInit() {
         System.out.println("Beginning test sequence two...");
         //Test sequence
-        _pod.setDriveMotor(0.0); //Stop both motors
+        _pod.setDriveMotor(0.5); //Turn on driving motor at 50% speed
         _pod.setTurningMotor(0.0);
-        _pod.setTurningSetpoint(90.0); //Begin PID testing
         _pod.initSmartDashboard();
     }
     
@@ -75,18 +74,21 @@ public class RobotSwerve extends IterativeRobot {
      */
     public void teleopPeriodic() {
         _pod.updateSmartDashboard();
+        System.out.println(_pod.getEncoderRate());
     }
     
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-        //System.out.println("PID Output: " + _pod.getTurningPIDOutput());
-        System.out.println("Encoder: " + (_pod.getEncoderDegrees()));
+        
     }
     
     public void disabledInit() {
         _pod.disable();
     }
     
+    public void disabledPeriodic() {
+        
+    }
 }
