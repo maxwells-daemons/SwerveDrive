@@ -6,11 +6,12 @@
 package hardware;
 
 import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.Sendable;
 
 /**
  *
  * @author Aidan
  */
-public interface AngularSensor extends PIDSource {
+public interface AngularSensor extends PIDSource, Sendable {
     public double getDegrees();
 }

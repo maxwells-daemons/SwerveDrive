@@ -4,6 +4,7 @@ package hardware;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
@@ -40,8 +41,8 @@ public class SwervePod {
     private final double encoderInchesPerTick = (2 * PI * wheelRadius) / (wheelGearRatio * encoderGearRatio * encoderTicksPerRev);
     
     // Control constants //
-    private final double Kp_turning = 0.015;
-    private final double Ki_turning = 0.002;
+    private final double Kp_turning = 0.012;
+    private final double Ki_turning = 0.000;
     private final double Kd_turning = 0.0001;
     private final double tolerance_turning = 10.0;
     
@@ -66,6 +67,28 @@ public class SwervePod {
         PIDTurning.setContinuous(true);
         PIDTurning.setAbsoluteTolerance(tolerance_turning);    
         PIDTurning.disable();
+    }
+    
+    public void initSmartDashboard() {
+        /*
+        class tableTest implements ITable {
+            public double getDouble() {
+                return 0.0;
+            }
+        }
+        */
+        
+        //TODO: Add all relevant info
+        SmartDashboard.putData("Turning PID", PIDTurning);
+        SmartDashboard.putNumber("Pod Facing Angle", _directionSensor.getDegrees());
+        SmartDashboard.putNumber("Turning PID Output", PIDTurning.get());
+        System.out.println(_encoder.getSmartDashboardType());
+    }
+    
+    public void updateSmartDashboard() { //Call to update SmartDashboard values
+        //TODO: Add all relevant info
+        SmartDashboard.putNumber("Pod Facing Angle", _directionSensor.getDegrees());
+        SmartDashboard.putNumber("Turning PID Output", PIDTurning.get());
     }
     
     public void setTurningSetpoint(double degrees) {

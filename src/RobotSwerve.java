@@ -53,13 +53,14 @@ public class RobotSwerve extends IterativeRobot {
     public void teleopInit() {
         System.out.println("Beginning test sequence two...");
         //Test sequence
-        _pod.setDriveMotor(0.0); //Start drive motor backwards at 30% speed
+        _pod.setDriveMotor(0.0); //Stop both motors
         _pod.setTurningMotor(0.0);
-        //_pod.setTurningSetpoint(90.0);
+        _pod.setTurningSetpoint(90.0); //Begin PID testing
+        _pod.initSmartDashboard();
     }
     
     public void testInit() {
-        //Not using test since it overrides SmartDashboard stuff
+        //Not using test since it overrides SmartDashboard display
     }
 
     /**
@@ -73,7 +74,7 @@ public class RobotSwerve extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
+        _pod.updateSmartDashboard();
     }
     
     /**
