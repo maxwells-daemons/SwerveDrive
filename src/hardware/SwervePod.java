@@ -36,7 +36,7 @@ public class SwervePod {
     // Temporary solution to converting encoder ticks to useful units //
     private final double wheelGearRatio = 3.5;
     private final double encoderGearRatio = 1.5;
-    private final double encoderTicksPerRev = 2048;
+    private final double encoderTicksPerRev = 125;
     private final double wheelRadius = 1.0; //In inches
     private final double encoderInchesPerTick = (2 * PI * wheelRadius) / (wheelGearRatio * encoderGearRatio * encoderTicksPerRev);
     private final double maxWheelSpeed = 24.3; //Speed the wheel moves at max output (maxSpeed) in inches / sec; temporary fix, determined empirically
