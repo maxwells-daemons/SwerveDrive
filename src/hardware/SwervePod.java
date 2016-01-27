@@ -48,8 +48,8 @@ public class SwervePod {
     private final double Kd_turning = 0.000;
     private final double tolerance_turning = 10.0;
     
-    private final double Kp_driving = 0.012;
-    private final double Ki_driving = 0.000;
+    private final double Kp_driving = 0.007;
+    private final double Ki_driving = 0.001;
     private final double Kd_driving = 0.000;
     private final double tolerance_driving = 1.0;
     
@@ -143,7 +143,6 @@ public class SwervePod {
     }
     
     public double getEncoderRate() { //Inches per second
-        //NOTE: Encoder is currently not reading high rates correctly. I think it's skipping ticks at high speeds -- resolution * RPM too high for electronics?
         return _encoder.getRate();
     }
     

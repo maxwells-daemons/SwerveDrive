@@ -8,13 +8,13 @@
 
 
 
+import edu.wpi.first.wpilibj.CounterBase;
 import hardware.AbsoluteAnalogEncoder;
 import hardware.SabertoothSpeedController;
 import hardware.SwervePod;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,7 +39,7 @@ public class RobotSwerve extends IterativeRobot {
     public void robotInit() {
         System.out.println("Initializing robot...");
         if (!SabertoothSpeedController.isSerialPortInitialized()) SabertoothSpeedController.initializeSerialPort(9600);
-        _encoder = new Encoder(1, 2);
+        _encoder = new Encoder(1, 2, false, CounterBase.EncodingType.k1X);
         _digipot = new AbsoluteAnalogEncoder(1, 0.204, 4.96, 0.0);
         
         _turningMotor = new Talon(9);
@@ -53,7 +53,7 @@ public class RobotSwerve extends IterativeRobot {
     public void teleopInit() {
         System.out.println("Beginning test sequence two...");
         //Test sequence
-        _pod.setDriveMotor(0.5); //Turn on driving motor at 50% speed
+        _pod.setDriveMotor(0.0); //Turn on driving motor at 75% speed
         _pod.setTurningMotor(0.0);
         _pod.initSmartDashboard();
     }
