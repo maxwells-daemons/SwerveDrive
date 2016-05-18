@@ -3,6 +3,7 @@ package hardware;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDController.AbsoluteTolerance;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,15 +44,15 @@ public class SwervePod {
     
     // Control constants //
     //TODO: Tune all
-    private final double Kp_turning = 0.012;
+    private final double Kp_turning = 0.019; //0.01;
     private final double Ki_turning = 0.000;
-    private final double Kd_turning = 0.000;
-    private final double tolerance_turning = 10.0;
+    private final double Kd_turning = 0.009; //0.0;
+    private final double tolerance_turning = 30;
     
-    private final double Kp_driving = 0.007;
-    private final double Ki_driving = 0.001;
+    private final double Kp_driving = 0.0;
+    private final double Ki_driving = 0.000;
     private final double Kd_driving = 0.000;
-    private final double tolerance_driving = 1.0;
+    private final double tolerance_driving = 0.0;
     
     // PID loops //
     PIDController PIDTurning;
@@ -74,14 +75,14 @@ public class SwervePod {
         PIDTurning = new PIDController(Kp_turning, Ki_turning, Kd_turning, _directionSensor, _turningMotor);
         PIDTurning.setInputRange(minDegrees, maxDegrees);
         PIDTurning.setOutputRange(minSpeed, maxSpeed);
-        PIDTurning.setContinuous(true);
-        PIDTurning.setAbsoluteTolerance(tolerance_turning);    
-        PIDTurning.disable();
+        PIDTurning.setContinuous();
+        PIDTurning.setAbsoluteTolerance(tolerance_turning);
+        PIDTurning.enable();
         
         // Linear driving //
         PIDDriving = new PIDController(Kp_driving, Ki_driving, Kd_driving, _encoder, _driveMotor);
         PIDDriving.setOutputRange(minSpeed, maxSpeed);
-        PIDDriving.disable();
+        PIDDriving.enable();
     }
     
     public void initSmartDashboard() {
@@ -96,6 +97,8 @@ public class SwervePod {
         //TODO: Handle through custom SmartDashboard widget
         SmartDashboard.putNumber("Pod Facing Angle", _directionSensor.getDegrees());
         SmartDashboard.putNumber("Wheel Speed", _encoder.getRate());
+        SmartDashboard.putNumber("Facing Angle Command", PIDTurning.getSetpoint());
+        SmartDashboard.putNumber("Wheel Speed Command", PIDDriving.getSetpoint());
     }
     
     public void setTurningSetpoint(double degrees) {
