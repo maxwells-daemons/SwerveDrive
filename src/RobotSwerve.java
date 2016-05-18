@@ -79,10 +79,10 @@ public class RobotSwerve extends IterativeRobot {
         _digipot1 = new AbsoluteAnalogEncoder(2, 0.204, 4.96, 0.0);
         
         _encoder2 = new Encoder(3, 4, false, CounterBase.EncodingType.k1X);
-        _digipot2 = new AbsoluteAnalogEncoder(1, 0.204, 4.96, 0.0);
+        _digipot2 = new AbsoluteAnalogEncoder(1, 0.204, 4.96, 20);
         
         _encoder3 = new Encoder(5, 6, false, CounterBase.EncodingType.k1X);
-        _digipot3 = new AbsoluteAnalogEncoder(3, 0.204, 4.96, 333);
+        _digipot3 = new AbsoluteAnalogEncoder(3, 0.204, 4.96, 334.5);
         
         _encoder4 = new Encoder(7, 8, false, CounterBase.EncodingType.k1X);
         _digipot4 = new AbsoluteAnalogEncoder(4, 0.204, 4.96, 20);
