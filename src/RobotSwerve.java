@@ -87,17 +87,17 @@ public class RobotSwerve extends IterativeRobot {
         _encoder4 = new Encoder(7, 8, false, CounterBase.EncodingType.k1X);
         _digipot4 = new AbsoluteAnalogEncoder(4, 0.204, 4.96, 20);
         
-        _turningMotor1 = new Talon(4);
-        _driveMotor1 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
+        _turningMotor1 = new Talon(1);
+        _driveMotor1 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_TWO, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
         
-        _turningMotor2 = new Talon(3);
-        _driveMotor2 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_TWO);
+        _turningMotor2 = new Talon(2);
+        _driveMotor2 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_TWO, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_TWO);
         
-        _turningMotor3 = new Talon(1);
-        _driveMotor3 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_TWO, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
+        _turningMotor3 = new Talon(3);
+        _driveMotor3 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_ONE);
         
-        _turningMotor4 = new Talon(2);
-        _driveMotor4 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_TWO, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_TWO);
+        _turningMotor4 = new Talon(4);
+        _driveMotor4 = new SabertoothSpeedController(SabertoothSpeedController.SabertoothAddress.SABERTOOTH_ONE, SabertoothSpeedController.SabertoothMotor.SABERTOOTH_MOTOR_TWO);
     
         _pod1 = new SwervePod(_turningMotor1, _driveMotor1, _encoder1, _digipot1);
         _pod2 = new SwervePod(_turningMotor2, _driveMotor2, _encoder2, _digipot2);
@@ -142,7 +142,7 @@ public class RobotSwerve extends IterativeRobot {
             _pod4.setTurningSetpoint(90);
         } else if (_joystick.getRawButton(3)) {
             _scopeTrigger.set(true);
-            //_pod3.setTurningSetpoint(90);
+            _pod3.setTurningSetpoint(90);
         } else if (_joystick.getRawButton(4)) {
             _scopeTrigger.set(true);
             _pod1.setTurningSetpoint(_joystick.getDirectionDegrees() + 180.0);
