@@ -1,5 +1,4 @@
-package hardware;
-
+package org.iolani.robotics.hardware;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
@@ -7,12 +6,6 @@ import edu.wpi.first.wpilibj.PIDController.AbsoluteTolerance;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
@@ -47,7 +40,7 @@ public class SwervePod {
     private final double Kp_turning = 0.019; //0.01;
     private final double Ki_turning = 0.000;
     private final double Kd_turning = 0.009; //0.0;
-    private final double tolerance_turning = 30;
+    private final double tolerance_turning = 0.0;
     
     private final double Kp_driving = 0.0;
     private final double Ki_driving = 0.000;
@@ -65,8 +58,6 @@ public class SwervePod {
         
         // Initialize sensors //
         _encoder = encoder;
-        _encoder.setDistancePerPulse(encoderInchesPerTick);
-        _encoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); //The encoder should return a rate
         _encoder.start();
         _directionSensor = directionSensor;
         
@@ -82,11 +73,11 @@ public class SwervePod {
         // Linear driving //
         PIDDriving = new PIDController(Kp_driving, Ki_driving, Kd_driving, _encoder, _driveMotor);
         PIDDriving.setOutputRange(minSpeed, maxSpeed);
-        PIDDriving.enable();
+        PIDDriving.disable(); //TODO: Enable
     }
     
     public void initSmartDashboard() {
-        //TODO: Write custom SmartDashboard widget
+        //TODO: Write custom SmartDashboard widget?
         SmartDashboard.putData("Turning PID", PIDTurning);
         SmartDashboard.putNumber("Pod Facing Angle", _directionSensor.getDegrees());
         SmartDashboard.putData("Driving PID", PIDDriving);
@@ -94,7 +85,7 @@ public class SwervePod {
     }
     
     public void updateSmartDashboard() { //Call to update SmartDashboard values
-        //TODO: Handle through custom SmartDashboard widget
+        //TODO: Handle through custom SmartDashboard widget?
         SmartDashboard.putNumber("Pod Facing Angle", _directionSensor.getDegrees());
         SmartDashboard.putNumber("Wheel Speed", _encoder.getRate());
         SmartDashboard.putNumber("Facing Angle Command", PIDTurning.getSetpoint());

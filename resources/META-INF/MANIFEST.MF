@@ -1,6 +1,6 @@
 MIDlet-Name: Swerve
 MIDlet-Version: 1.0.0
 MIDlet-Vendor: FIRST
-MIDlet-1: RobotSwerve, , RobotSwerve
+MIDlet-1: RobotSwerve, , org.iolani.robotics.RobotSwerve
 MicroEdition-Profile: IMP-1.0
 MicroEdition-Configuration: CLDC-1.1
