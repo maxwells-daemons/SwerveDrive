@@ -42,12 +42,12 @@ public class SwerveDrive extends Subsystem {
     private static final double ENCODER_INCHES_PER_TICK = (Math.PI * WHEEL_DIAMETER_INCHES) / (WHEEL_GEAR_RATIO * ENCODER_GEAR_RATIO * ENCODER_TICKS_PER_REV);
     private static final double WHEEL_MAX_SPEED = 24.3; //Speed the wheel moves at max output (maxSpeed) in inches / sec; temporary fix, determined empirically
     
-    private static final double DIGIPOT_MIN_VOLTAGE = 0.204;
-    private static final double DIGIPOT_MAX_VOLTAGE = 4.96;
-    private static final double WHEEL_ONE_DIGIPOT_OFFSET = 180.0; //Offsets fix the fact that the digipots aren't all facing exactly the same direction
-    private static final double WHEEL_TWO_DIGIPOT_OFFSET = 20.0;
-    private static final double WHEEL_THREE_DIGIPOT_OFFSET = 334.5;
-    private static final double WHEEL_FOUR_DIGIPOT_OFFSET = 200.0;
+    private static final double DIGIPOT_MIN_VOLTAGE = 0.160; //0.204, 0.160
+    private static final double DIGIPOT_MAX_VOLTAGE = 4.88; //4.96, 4.88
+    private static final double WHEEL_ONE_DIGIPOT_OFFSET = 235.0; //Offsets fix the fact that the digipots aren't all facing exactly the same direction
+    private static final double WHEEL_TWO_DIGIPOT_OFFSET = 26.0;
+    private static final double WHEEL_THREE_DIGIPOT_OFFSET = 1.5;
+    private static final double WHEEL_FOUR_DIGIPOT_OFFSET = 210.0;
     
     // Wheel pods //
     private SwervePod _swervePod1; //Front left
@@ -124,10 +124,10 @@ public class SwerveDrive extends Subsystem {
         setAllWheelAngles(podAngles);
         //TODO: Set drive power with PID
         //NOTE: Driving currently disabled due to mechanical issues
-        //_swervePod1.setDriveMotor(powerLeft); //Left
-        //_swervePod4.setDriveMotor(powerLeft); //Left 
-        //_swervePod2.setDriveMotor(powerRight); //Right
-        //_swervePod3.setDriveMotor(powerRight); //Right
+        _swervePod1.setDriveMotor(powerLeft); //Left
+        _swervePod4.setDriveMotor(powerLeft); //Left 
+        _swervePod2.setDriveMotor(powerRight); //Right
+        _swervePod3.setDriveMotor(powerRight); //Right
     }
     
 }
