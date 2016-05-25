@@ -3,6 +3,7 @@ package org.iolani.robotics.hardware;
 import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -49,13 +50,15 @@ public class SwervePod {
     PIDController PIDTurning;
     PIDController PIDDriving;
     
-    public SwervePod(SpeedController turningMotor, SpeedController driveMotor, Encoder encoder, AngularSensor directionSensor) {
+    public SwervePod(SpeedController turningMotor, SpeedController driveMotor, Encoder encoder, double encoderDistancePerTick, AngularSensor directionSensor) {
         // Initialize motors //
         _turningMotor = turningMotor;
         _driveMotor = driveMotor;
         
         // Initialize sensors //
         _encoder = encoder;
+        _encoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate);
+        _encoder.setDistancePerPulse(encoderDistancePerTick);
         _encoder.start();
         _directionSensor = directionSensor;
         
