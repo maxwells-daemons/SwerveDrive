@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iolani.robotics.RobotMap;
+import org.iolani.robotics.commands.CommandBase;
 import org.iolani.robotics.commands.OperateCrabDrive;
 import org.iolani.robotics.hardware.AbsoluteAnalogEncoder;
 import org.iolani.robotics.hardware.SabertoothSpeedController;
@@ -42,8 +43,8 @@ public class SwerveDrive extends Subsystem {
     private static final double ENCODER_INCHES_PER_TICK = (Math.PI * WHEEL_DIAMETER_INCHES) / (WHEEL_GEAR_RATIO * ENCODER_GEAR_RATIO * ENCODER_TICKS_PER_REV);
     private static final double WHEEL_MAX_SPEED = 24.3; //Speed the wheel moves at max output (maxSpeed) in inches / sec; temporary fix, determined empirically
     
-    private static final double DIGIPOT_MIN_VOLTAGE = 0.160; //0.204, 0.160
-    private static final double DIGIPOT_MAX_VOLTAGE = 4.88; //4.96, 4.88
+    private static final double DIGIPOT_MIN_VOLTAGE = 0.3; //0.204, 0.160
+    private static final double DIGIPOT_MAX_VOLTAGE = 4.7; //4.96, 4.88
     private static final double WHEEL_ONE_DIGIPOT_OFFSET = 235.0; //Offsets fix the fact that the digipots aren't all facing exactly the same direction
     private static final double WHEEL_TWO_DIGIPOT_OFFSET = 26.0;
     private static final double WHEEL_THREE_DIGIPOT_OFFSET = 1.5;
@@ -56,7 +57,7 @@ public class SwerveDrive extends Subsystem {
     private SwervePod _swervePod4; //Rear left
     
     public void init() {
-        System.out.println("Initializing drivetrain");
+        System.out.println("Initializing drivetrain...");
         
         // Initialize sensors //
         _encoder1 = new Encoder(RobotMap.encoder1Pin1, RobotMap.encoder1Pin2, false, CounterBase.EncodingType.k1X);
@@ -95,6 +96,8 @@ public class SwerveDrive extends Subsystem {
         _swervePod3 = new SwervePod(_turningMotor3, _driveMotor3, _encoder3, _digipot3);
         _swervePod4 = new SwervePod(_turningMotor4, _driveMotor4, _encoder4, _digipot4);
         
+        _swervePod1.initSmartDashboard();
+        
         // Initialize swerve pod setpoints //
         setAllWheelAngles(180.0);
         //setAllWheelPowers(0.0);
@@ -123,7 +126,6 @@ public class SwerveDrive extends Subsystem {
     public void setCrab(double podAngles, double powerLeft, double powerRight) {
         setAllWheelAngles(podAngles);
         //TODO: Set drive power with PID
-        //NOTE: Driving currently disabled due to mechanical issues
         _swervePod1.setDriveMotor(powerLeft); //Left
         _swervePod4.setDriveMotor(powerLeft); //Left 
         _swervePod2.setDriveMotor(powerRight); //Right

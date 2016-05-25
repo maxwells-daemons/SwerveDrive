@@ -22,6 +22,8 @@ public abstract class CommandBase extends Command {
     
         // Initialize subsystems //
         swervedrive.init();
+        
+        System.out.println("Initialization successful!");
     }
     
     public CommandBase(String name) {

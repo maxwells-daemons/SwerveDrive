@@ -1,9 +1,8 @@
 package org.iolani.robotics.hardware;
 
+import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDController.AbsoluteTolerance;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -36,11 +35,10 @@ public class SwervePod {
     private final double maxWheelSpeed = 24.3; //Speed the wheel moves at max output (maxSpeed) in inches / sec; temporary fix, determined empirically
     
     // Control constants //
-    //TODO: Tune all
-    private final double Kp_turning = 0.019; //0.01;
+    private final double Kp_turning = 0.019; //0.019;
     private final double Ki_turning = 0.000;
-    private final double Kd_turning = 0.009; //0.0;
-    private final double tolerance_turning = 0.0;
+    private final double Kd_turning = 0.009; //0.009;
+    private final double tolerance_turning = 5;
     
     private final double Kp_driving = 0.0;
     private final double Ki_driving = 0.000;
@@ -64,9 +62,8 @@ public class SwervePod {
         // Initialize PID loops //
         // Turning //
         PIDTurning = new PIDController(Kp_turning, Ki_turning, Kd_turning, _directionSensor, _turningMotor);
-        PIDTurning.setInputRange(minDegrees, maxDegrees);
         PIDTurning.setOutputRange(minSpeed, maxSpeed);
-        PIDTurning.setContinuous();
+        PIDTurning.setContinuous(true);
         PIDTurning.setAbsoluteTolerance(tolerance_turning);
         PIDTurning.enable();
         
@@ -90,10 +87,27 @@ public class SwervePod {
         SmartDashboard.putNumber("Wheel Speed", _encoder.getRate());
         SmartDashboard.putNumber("Facing Angle Command", PIDTurning.getSetpoint());
         SmartDashboard.putNumber("Wheel Speed Command", PIDDriving.getSetpoint());
+        
+        ((AbsoluteAnalogEncoder) _directionSensor).updateSmartDashboard();
     }
     
     public void setTurningSetpoint(double degrees) {
-        PIDTurning.setSetpoint(degrees);
+        if (_directionSensor instanceof AbsoluteAnalogEncoder) { //Send commands based on a sensor that tracks turns (ex. >360 degrees)
+            AbsoluteAnalogEncoder absoluteSensor = (AbsoluteAnalogEncoder) _directionSensor;
+            double newDegreesLower = ((absoluteSensor.getTurns() - 1) * 360.0) + degrees;
+            double newDegreesMiddle = (absoluteSensor.getTurns() * 360.0) + degrees;
+            double newDegreesHigher = ((absoluteSensor.getTurns() + 1) * 360.0) + degrees; //In case going across the sensor gap is faster
+            double newDegrees = newDegreesLower;
+            if (Math.abs(newDegreesMiddle - _directionSensor.getDegrees()) < Math.abs(newDegrees - _directionSensor.getDegrees())) {
+                newDegrees = newDegreesMiddle;
+            }
+            if (Math.abs(newDegreesHigher - _directionSensor.getDegrees()) < Math.abs(newDegrees - _directionSensor.getDegrees())) {
+                newDegrees = newDegreesHigher;
+            }
+            PIDTurning.setSetpoint(newDegrees);
+        } else {
+            PIDTurning.setSetpoint(degrees);
+        }
     }
     
     public double getTurningSetpoint() {
