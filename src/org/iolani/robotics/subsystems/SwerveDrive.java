@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import org.iolani.robotics.OI;
 import org.iolani.robotics.RobotMap;
 import org.iolani.robotics.commands.OperateCrabDrive;
 import org.iolani.robotics.hardware.AbsoluteAnalogEncoder;
+import org.iolani.robotics.hardware.BI6120Magnepot;
 import org.iolani.robotics.hardware.SabertoothSpeedController;
 import org.iolani.robotics.hardware.SwervePod;
 
@@ -43,13 +43,6 @@ public class SwerveDrive extends Subsystem {
     private static final double ENCODER_INCHES_PER_TICK = (Math.PI * WHEEL_DIAMETER_INCHES) / (WHEEL_GEAR_RATIO * ENCODER_GEAR_RATIO * ENCODER_TICKS_PER_REV);
     private static final double WHEEL_MAX_SPEED = 24.3; //Speed the wheel moves at max output (maxSpeed) in inches / sec; temporary fix, determined empirically
     
-    private static final double DIGIPOT_MIN_VOLTAGE = 0.3; //0.204, 0.160
-    private static final double DIGIPOT_MAX_VOLTAGE = 4.7; //4.96, 4.88
-    private static final double WHEEL_ONE_DIGIPOT_OFFSET = 235.0; //Offsets fix the fact that the digipots aren't all facing exactly the same direction
-    private static final double WHEEL_TWO_DIGIPOT_OFFSET = 26.0;
-    private static final double WHEEL_THREE_DIGIPOT_OFFSET = 1.5;
-    private static final double WHEEL_FOUR_DIGIPOT_OFFSET = 210.0;
-    
     // Wheel pods //
     private SwervePod _swervePod1; //Front left
     private SwervePod _swervePod2; //Front right
@@ -76,10 +69,10 @@ public class SwerveDrive extends Subsystem {
         _encoder4.setDistancePerPulse(ENCODER_INCHES_PER_TICK);
         _encoder4.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate);
         
-        _digipot1 = new AbsoluteAnalogEncoder(RobotMap.digipot1, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot1Offset);
-        _digipot2 = new AbsoluteAnalogEncoder(RobotMap.digipot2, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot2Offset);
-        _digipot3 = new AbsoluteAnalogEncoder(RobotMap.digipot3, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot3Offset);
-        _digipot4 = new AbsoluteAnalogEncoder(RobotMap.digipot4, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot4Offset);
+        _digipot1 = new BI6120Magnepot(RobotMap.digipot1, RobotMap.digipot1Offset);
+        _digipot2 = new BI6120Magnepot(RobotMap.digipot2, RobotMap.digipot2Offset);
+        _digipot3 = new BI6120Magnepot(RobotMap.digipot3, RobotMap.digipot3Offset);
+        _digipot4 = new BI6120Magnepot(RobotMap.digipot4, RobotMap.digipot4Offset);
         
         // Initialize motors //
         // TODO: Handle motor inversions?
