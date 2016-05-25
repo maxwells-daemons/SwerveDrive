@@ -1,11 +1,8 @@
 package org.iolani.robotics.subsystems;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iolani.robotics.RobotMap;
 import org.iolani.robotics.commands.OperateCrabDrive;
-import org.iolani.robotics.hardware.AbsoluteAnalogEncoder;
 import org.iolani.robotics.hardware.SabertoothSpeedController;
 import org.iolani.robotics.hardware.SwervePod;
 import org.iolani.robotics.hardware.TestBotSwervePod;
@@ -15,24 +12,6 @@ import org.iolani.robotics.hardware.TestBotSwervePod;
  * @author Aidan
  */
 public class SwerveDrive extends Subsystem {
-    // Hardware //
-    private SabertoothSpeedController _driveMotor1;
-    private SabertoothSpeedController _driveMotor2;
-    private SabertoothSpeedController _driveMotor3;
-    private SabertoothSpeedController _driveMotor4;
-    private Talon _turningMotor1;
-    private Talon _turningMotor2;
-    private Talon _turningMotor3;
-    private Talon _turningMotor4;
-    private Encoder _encoder1;
-    private Encoder _encoder2;
-    private Encoder _encoder3;
-    private Encoder _encoder4;
-    private AbsoluteAnalogEncoder _digipot1;
-    private AbsoluteAnalogEncoder _digipot2;
-    private AbsoluteAnalogEncoder _digipot3;
-    private AbsoluteAnalogEncoder _digipot4;
-    
     // Wheel pods //
     private SwervePod _swervePod1; //Front left
     private SwervePod _swervePod2; //Front right
@@ -61,6 +40,21 @@ public class SwerveDrive extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         this.setDefaultCommand(new OperateCrabDrive());
+    }
+    
+    public void setWheelAngles(double degrees1, double degrees2, double degrees3, double degrees4) {
+        _swervePod1.setTurningSetpoint(degrees1);
+        _swervePod2.setTurningSetpoint(degrees2);
+        _swervePod3.setTurningSetpoint(degrees3);
+        _swervePod4.setTurningSetpoint(degrees4);
+    }
+    
+    public void setWheelPowers(double power1, double power2, double power3, double power4) {
+        //TODO: USE PID CONTROL
+        _swervePod1.setDriveMotor(power1);
+        _swervePod2.setDriveMotor(power2);
+        _swervePod3.setDriveMotor(power3);
+        _swervePod4.setDriveMotor(power4);
     }
     
     public void setAllWheelAngles(double degrees) { //Set all wheel pods to face the same direction
