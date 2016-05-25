@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.iolani.robotics.OI;
 import org.iolani.robotics.RobotMap;
-import org.iolani.robotics.commands.CommandBase;
 import org.iolani.robotics.commands.OperateCrabDrive;
 import org.iolani.robotics.hardware.AbsoluteAnalogEncoder;
 import org.iolani.robotics.hardware.SabertoothSpeedController;
@@ -59,6 +59,9 @@ public class SwerveDrive extends Subsystem {
     public void init() {
         System.out.println("Initializing drivetrain...");
         
+        // Initialize serial port //
+        if (!SabertoothSpeedController.isSerialPortInitialized()) SabertoothSpeedController.initializeSerialPort(9600);
+        
         // Initialize sensors //
         _encoder1 = new Encoder(RobotMap.encoder1Pin1, RobotMap.encoder1Pin2, false, CounterBase.EncodingType.k1X);
         _encoder1.setDistancePerPulse(ENCODER_INCHES_PER_TICK);
@@ -73,10 +76,10 @@ public class SwerveDrive extends Subsystem {
         _encoder4.setDistancePerPulse(ENCODER_INCHES_PER_TICK);
         _encoder4.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate);
         
-        _digipot1 = new AbsoluteAnalogEncoder(RobotMap.digipot1, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, WHEEL_ONE_DIGIPOT_OFFSET);
-        _digipot2 = new AbsoluteAnalogEncoder(RobotMap.digipot2, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, WHEEL_TWO_DIGIPOT_OFFSET);
-        _digipot3 = new AbsoluteAnalogEncoder(RobotMap.digipot3, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, WHEEL_THREE_DIGIPOT_OFFSET);
-        _digipot4 = new AbsoluteAnalogEncoder(RobotMap.digipot4, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, WHEEL_FOUR_DIGIPOT_OFFSET);
+        _digipot1 = new AbsoluteAnalogEncoder(RobotMap.digipot1, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot1Offset);
+        _digipot2 = new AbsoluteAnalogEncoder(RobotMap.digipot2, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot2Offset);
+        _digipot3 = new AbsoluteAnalogEncoder(RobotMap.digipot3, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot3Offset);
+        _digipot4 = new AbsoluteAnalogEncoder(RobotMap.digipot4, DIGIPOT_MIN_VOLTAGE, DIGIPOT_MAX_VOLTAGE, RobotMap.digipot4Offset);
         
         // Initialize motors //
         // TODO: Handle motor inversions?

@@ -17,9 +17,6 @@ public abstract class CommandBase extends Command {
     public static void init() {
         oi = new OI();
         
-        // Initialize serial port //
-        if (!SabertoothSpeedController.isSerialPortInitialized()) SabertoothSpeedController.initializeSerialPort(9600);
-    
         // Initialize subsystems //
         swervedrive.init();
         

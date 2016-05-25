@@ -51,12 +51,12 @@ public class SabertoothSpeedController implements SpeedController {
     }
     
     // Motor specification //
-    private SabertoothAddress _address;
-    private SabertoothMotor _motorNumber;
+    private Address _address;
+    private Motor _motorNumber;
     
     private double _currentSpeed;
     
-    public static class SabertoothAddress { //WPILib enum-like pattern; defines which Sabertooth we're talking to
+    public static class Address { //WPILib enum-like pattern; defines which Sabertooth we're talking to
         public final int value;
         
         protected static final int SABERTOOTH_ONE_VALUE = 128; //DIP switch address = 128
@@ -68,35 +68,35 @@ public class SabertoothSpeedController implements SpeedController {
         protected static final int SABERTOOTH_SEVEN_VALUE = 134; //DIP switch address = 134
         protected static final int SABERTOOTH_EIGHT_VALUE = 135; //DIP switch address = 135
         
-        public static final SabertoothAddress SABERTOOTH_ONE = new SabertoothAddress(SABERTOOTH_ONE_VALUE);
-        public static final SabertoothAddress SABERTOOTH_TWO = new SabertoothAddress(SABERTOOTH_TWO_VALUE);
-        public static final SabertoothAddress SABERTOOTH_THREE = new SabertoothAddress(SABERTOOTH_THREE_VALUE);
-        public static final SabertoothAddress SABERTOOTH_FOUR = new SabertoothAddress(SABERTOOTH_FOUR_VALUE);
-        public static final SabertoothAddress SABERTOOTH_FIVE = new SabertoothAddress(SABERTOOTH_FIVE_VALUE);
-        public static final SabertoothAddress SABERTOOTH_SIX = new SabertoothAddress(SABERTOOTH_SIX_VALUE);
-        public static final SabertoothAddress SABERTOOTH_SEVEN = new SabertoothAddress(SABERTOOTH_SEVEN_VALUE);
-        public static final SabertoothAddress SABERTOOTH_EIGHT = new SabertoothAddress(SABERTOOTH_EIGHT_VALUE);
+        public static final Address ONE = new Address(SABERTOOTH_ONE_VALUE);
+        public static final Address TWO = new Address(SABERTOOTH_TWO_VALUE);
+        public static final Address THREE = new Address(SABERTOOTH_THREE_VALUE);
+        public static final Address FOUR = new Address(SABERTOOTH_FOUR_VALUE);
+        public static final Address FIVE = new Address(SABERTOOTH_FIVE_VALUE);
+        public static final Address SIX = new Address(SABERTOOTH_SIX_VALUE);
+        public static final Address SEVEN = new Address(SABERTOOTH_SEVEN_VALUE);
+        public static final Address EIGHT = new Address(SABERTOOTH_EIGHT_VALUE);
         
-        private SabertoothAddress(int value) {
+        private Address(int value) {
             this.value = value;
         }
     }
     
-    public static class SabertoothMotor {
+    public static class Motor {
         public final int value;
         
         protected static final int SABERTOOTH_MOTOR_ONE_VALUE = 1; //Motor in motor slot 1
         protected static final int SABERTOOTH_MOTOR_TWO_VALUE = 2; //Motor in motor slot 2
         
-        public static final SabertoothMotor SABERTOOTH_MOTOR_ONE = new SabertoothMotor(SABERTOOTH_MOTOR_ONE_VALUE);
-        public static final SabertoothMotor SABERTOOTH_MOTOR_TWO = new SabertoothMotor(SABERTOOTH_MOTOR_TWO_VALUE);
+        public static final Motor ONE = new Motor(SABERTOOTH_MOTOR_ONE_VALUE);
+        public static final Motor TWO = new Motor(SABERTOOTH_MOTOR_TWO_VALUE);
         
-        private SabertoothMotor(int value) {
+        private Motor(int value) {
             this.value = value;
         }
     }
     
-    public SabertoothSpeedController(SabertoothAddress address, SabertoothMotor motorNumber) {
+    public SabertoothSpeedController(Address address, Motor motorNumber) {
         if (_PORT == null) throw new IllegalStateException("Serial port not initialized, call initializeSerialPort(baudRate)");
         
         // Check to see if this motor has already been assigned //
@@ -161,7 +161,7 @@ public class SabertoothSpeedController implements SpeedController {
         byte command;
         command = SabertoothCommand.MOTOR_ONE_FORWARD.value;
         
-        if (_motorNumber == SabertoothMotor.SABERTOOTH_MOTOR_ONE) {
+        if (_motorNumber == Motor.ONE) {
             if (speed >= motorInput_offSpeed) {
                 command = SabertoothCommand.MOTOR_ONE_FORWARD.value;
             } else {
@@ -194,11 +194,11 @@ public class SabertoothSpeedController implements SpeedController {
         return !(_PORT == null);
     }
     
-    public SabertoothAddress getAddress() {
+    public Address getAddress() {
         return _address;
     }
     
-    public SabertoothMotor getMotorNumber() {
+    public Motor getMotorNumber() {
         return _motorNumber;
     }
 }
