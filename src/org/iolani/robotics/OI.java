@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import org.iolani.robotics.commands.OperateCrabDrive;
+import org.iolani.robotics.commands.OperateOmniDrive;
 import org.iolani.robotics.commands.OperateTurretDrive;
 
 /**
@@ -18,11 +19,13 @@ public class OI {
     // Buttons //
     private final Button _crabModeButton = new JoystickButton(_lStick, 1);
     private final Button _turretModeButton = new JoystickButton(_lStick, 2);
+    private final Button _omniModeButton = new JoystickButton(_lStick, 3);
     
     public OI() {
         // Assigning commands to buttons goes here //
         _crabModeButton.whenPressed(new OperateCrabDrive());
         _turretModeButton.whenPressed(new OperateTurretDrive());
+        _omniModeButton.whenPressed(new OperateOmniDrive());
     }
     
     public Joystick getLeftStick()  {

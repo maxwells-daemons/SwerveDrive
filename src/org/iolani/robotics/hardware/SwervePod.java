@@ -36,9 +36,9 @@ public class SwervePod {
     private final double maxWheelSpeed = 24.3; //Speed the wheel moves at max output (maxSpeed) in inches / sec; temporary fix, determined empirically
     
     // Control constants //
-    private final double Kp_turning = 0.019; //0.019;
+    private final double Kp_turning = 0.019;
     private final double Ki_turning = 0.000;
-    private final double Kd_turning = 0.009; //0.009;
+    private final double Kd_turning = 0.009;
     private final double tolerance_turning = 5;
     
     private final double Kp_driving = 0.0;
